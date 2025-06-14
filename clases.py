@@ -69,11 +69,12 @@ class Paciente:
 
 class ProcesadorPNG:
     def im_original(self, pacientes):
-        indice = int(input("\nIngrese el número del paciente que desea usar: ")) #esto es mas con la clave del paciente
+        indice = input("\nIngrese el número del paciente que desea usar: ") #esto es mas con la clave del paciente
         ima_original = pacientes[indice].imagen
-        return ima_original
+        corte_axial = ima_original[ima_original.shape[0] // 2]  # Corte central (Z/2)
+        return corte_axial
     
-    def traslación(self, ima_original):
+    def traslación(self, corte_axial):
 
         opciones = {
             1: (13, 120),   # Derecha, abajo
@@ -90,14 +91,14 @@ class ProcesadorPNG:
         MT = np.float32([[1, 0, dx], [0, 1, dy]])
 
         # Obtener tamaño de la imagen original
-        row, col = ima_original.shape  # img es la imagen DICOM 2D
+        row, col = corte_axial.shape[:2] # img es la imagen DICOM 2D
 
         # Aplicar traslación
-        tras = cv2.warpAffine(ima_original, MT, (col, row))
+        tras = cv2.warpAffine(corte_axial, MT, (col, row))
 
         # Mostrar imágenes en subplots
         fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-        axes[0].imshow(ima_original, cmap='gray')
+        axes[0].imshow(corte_axial, cmap='gray')
         axes[0].set_title("Imagen original")
         axes[0].axis('off')
 
@@ -113,6 +114,9 @@ class ProcesadorPNG:
         print("Imagen trasladada guardada como 'imagen_trasladada.png")
 
     def tranf(self, pacientes):
+        print("Claves de pacientes disponibles:")
+        for clave in pacientes:
+            print("-", clave)
         clave = input("Ingrese la clave del paciente a procesar: ")
         if clave in pacientes:
             corte = pacientes[clave].imagen
@@ -120,6 +124,10 @@ class ProcesadorPNG:
         else:
             print("Clave no válida.")
         
+        # Se toma una imagen 2D central para procesar
+        imagen_3d = pacientes[clave].imagen
+        corte = imagen_3d[imagen_3d.shape[0] // 2]  # Corte axial
+        corte = cv2.normalize(corte, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
 
         opcion= input( '''Opciones de binarización:
             1. Binario
@@ -128,8 +136,10 @@ class ProcesadorPNG:
             4. Tozero
             5. Tozero invertido
             ''')
+    
 
         kernel_size = int(input("Ingrese el tamaño del kernel morfológico (impar): "))
+        umbral = 125  
 
         print("Seleccione la forma a dibujar:")
         print("1. Círculo")
@@ -158,7 +168,7 @@ class ProcesadorPNG:
         morphed_im = cv2.morphologyEx(binaria_im, cv2.MORPH_GRADIENT, kernel, iterations=1)
 
         # Convertir a RGB para dibujo de forma y texto en color blanco
-        rgb_img = cv2.cvtColor(morphed_im, cv2.COLOR_BGR2RGB)
+        rgb_img = cv2.cvtColor(morphed_im, cv2.COLOR_GRAY2RGB)
 
         h, w = rgb_img.shape[:2]
         center = (w // 2, h // 2)
@@ -179,7 +189,7 @@ class ProcesadorPNG:
 
         #Texto a dibujar
         text1 = "Imagen binarizada"
-        text2 = "Umbral: (125,255) " #fijo??
+        text2 = "Umbral: 125 " #fijo
         text3 = f"Kernel: {kernel_size}X{kernel_size}"
 
         # Dibujar texto  encima de la imagen dentro de la forma
