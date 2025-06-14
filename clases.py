@@ -7,8 +7,6 @@ from pydicom import dcmread
 
 class Procesador:
     def cargar_serie_dicom(self, carpeta_dicom):
-        # carga de archivos DICOM
-        carpeta_dicom = "Datos"  
 
         # Obtener los nombres de todos los archivos .dcm
         archivos_dicom = [f for f in os.listdir(carpeta_dicom) if f.endswith('.dcm')]
@@ -114,12 +112,14 @@ class ProcesadorPNG:
         cv2.imwrite("imagen_trasladada.png", tras_uint8)
         print("Imagen trasladada guardada como 'imagen_trasladada.png")
 
-    def tranf(self, corte):
+    def tranf(self, pacientes):
+        clave = input("Ingrese la clave del paciente a procesar: ")
+        if clave in pacientes:
+            corte = pacientes[clave].imagen
+            patient_id = pacientes[clave].id_
+        else:
+            print("Clave no válida.")
         
-        # Solicitar tipo de binarización
-        # indice = int(input("Seleccione el índice de la imagen a procesar: "))
-        # image = pacientes[indice].imagen
-        # patient_id = pacientes[indice].id_
 
         opcion= input( '''Opciones de binarización:
             1. Binario
