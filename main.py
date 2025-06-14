@@ -1,6 +1,12 @@
 from clases import Procesador, Paciente, ProcesadorPNG
+import os
+# Diccionarios 
+pacientes = {}
+archivos_DICOM = {}  # Para DICOM, PNG
+
 
 if __name__ == "__main__":
+
     # Instanciar el procesador de DICOM
     procesador = Procesador()
 

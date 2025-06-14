@@ -114,7 +114,7 @@ class ProcesadorPNG:
         cv2.imwrite("imagen_trasladada.png", tras_uint8)
         print("Imagen trasladada guardada como 'imagen_trasladada.png")
 
-    def tarnsf(self, corte):
+    def tranf(self, corte):
         
         # Solicitar tipo de binarización
         # indice = int(input("Seleccione el índice de la imagen a procesar: "))
