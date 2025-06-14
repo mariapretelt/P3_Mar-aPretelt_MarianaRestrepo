@@ -113,6 +113,35 @@ class ProcesadorPNG:
         tras_uint8 = cv2.normalize(tras, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
         cv2.imwrite("imagen_trasladada.png", tras_uint8)
         print("Imagen trasladada guardada como 'imagen_trasladada.png")
+
+#Función para ingresar imágenes
+imagenesNuevas= {}
+
+def IngresarImagen():
+  ruta = input('Ingrese la ruta de la imagen JPG o PNG:')
+
+  if not os.path.exists(ruta):
+      print('Ruta inválida.')
+      return
+
+  nombre = input('Asignele un nombre: ')
+
+  if not ruta.lower().endswith(('.jpg', '.png')):
+      print("Formato no válido.")
+
+  elif ruta.lower().endswith('.dcm'):
+        try:
+            ds = pydicom.dcmread(ruta)
+            imagenesNuevas[nombre]= ds.pixel_array
+        except Exception as e:
+            print(f'Error')
+            return
+  else:
+      print('No se pudo cargar la imagen.')
+      return
+      
+  imagenesNuevas[nombre] = img
+  print(f"Imagen cargada exitosamente.")
                 
 
 
