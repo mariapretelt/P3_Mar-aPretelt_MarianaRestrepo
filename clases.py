@@ -69,6 +69,11 @@ class Paciente:
         self.edad = ds.PatientAge
         self.imagen = im_3d #la anteriormente reconstruida
 
+class ProcesadorPNG:
+    def im_original(self, pacientes):
+        indice = int(input("\nIngrese el número del paciente que desea usar: ")) #esto es mas con la clave del paciente
+        ima_original = pacientes[indice].imagen
+        return ima_original
                 
 
 
