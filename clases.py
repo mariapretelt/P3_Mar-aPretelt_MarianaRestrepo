@@ -74,6 +74,45 @@ class ProcesadorPNG:
         indice = int(input("\nIngrese el número del paciente que desea usar: ")) #esto es mas con la clave del paciente
         ima_original = pacientes[indice].imagen
         return ima_original
+    
+    def traslación(self, ima_original):
+
+        opciones = {
+            1: (13, 120),   # Derecha, abajo
+            2: (100, -50),  # Derecha, arriba
+            3: (70, -100)   # Derecha, más arriba
+        }
+
+        # Pedir selección
+        opcion = int(input("Elige número de 1 a 3: "))
+        dx, dy = opciones.get(opcion, (0, 0))  # Si no es válido, no se mueve
+        print(f"Traslación aplicada: dx={dx}, dy={dy}")
+
+        # Crear la matriz de transformación
+        MT = np.float32([[1, 0, dx], [0, 1, dy]])
+
+        # Obtener tamaño de la imagen original
+        row, col = ima_original.shape  # img es la imagen DICOM 2D
+
+        # Aplicar traslación
+        tras = cv2.warpAffine(ima_original, MT, (col, row))
+
+        # Mostrar imágenes en subplots
+        fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+        axes[0].imshow(ima_original, cmap='gray')
+        axes[0].set_title("Imagen original")
+        axes[0].axis('off')
+
+        axes[1].imshow(tras, cmap='gray')
+        axes[1].set_title(f"Imagen trasladada\n(dx={dx}, dy={dy})")
+        axes[1].axis('off')
+        plt.tight_layout()
+        plt.show()
+
+        # Guardar imagen
+        tras_uint8 = cv2.normalize(tras, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+        cv2.imwrite("imagen_trasladada.png", tras_uint8)
+        print("Imagen trasladada guardada como 'imagen_trasladada.png")
                 
 
 

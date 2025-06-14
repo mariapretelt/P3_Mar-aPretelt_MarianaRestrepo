@@ -37,3 +37,5 @@
 #     plt.title("Corte axial del paciente seleccionado")
 #     plt.axis('off')
 #     plt.show()
+
+#     procesador_png.traslación(corte_axial)
