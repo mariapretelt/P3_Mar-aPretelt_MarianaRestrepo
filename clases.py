@@ -49,11 +49,11 @@ class Procesador:
         axs[0].set_title(f'Corte axial ')
         axs[0].axis('off')
 
-        axs[1].imshow(corte_coronal, cmap='gray', aspect= 'auto')  # Corte coronal #aspect auto para arreglar achatamiento
+        axs[1].imshow(corte_coronal, cmap='gray', aspect= 6)  # Corte coronal #aspect auto para arreglar achatamiento
         axs[1].set_title(f'Corte coronal ')
         axs[1].axis('off')
 
-        axs[2].imshow(corte_sagital, cmap='gray', aspect= 'auto')  # Corte sagital
+        axs[2].imshow(corte_sagital, cmap='gray', aspect= 6)  # Corte sagital
         axs[2].set_title(f'Corte sagital ')
         axs[2].axis('off')
 
@@ -183,7 +183,7 @@ class ProcesadorPNG:
                 top_left = (center[0] - 100, center[1] - 100)
                 bottom_right = (center[0] + 100, center[1] + 100)
                 img = cv2.rectangle(rgb_img, top_left, bottom_right,(255,0,0), -1)
-                shape_height = 100  # Altura del cuadrado
+                
         else:
                 print(f"Forma no válida")
 
