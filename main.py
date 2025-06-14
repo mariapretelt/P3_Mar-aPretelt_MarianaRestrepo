@@ -39,3 +39,4 @@ if __name__ == "__main__":
     plt.show()
 
     procesador_png.traslación(corte_axial)
+    procesador_png.tranf(corte_axial)

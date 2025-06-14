@@ -114,34 +114,92 @@ class ProcesadorPNG:
         cv2.imwrite("imagen_trasladada.png", tras_uint8)
         print("Imagen trasladada guardada como 'imagen_trasladada.png")
 
-#Función para ingresar imágenes
-imagenesNuevas= {}
+    def tarnsf(self, corte):
+        
+        # Solicitar tipo de binarización
+        # indice = int(input("Seleccione el índice de la imagen a procesar: "))
+        # image = pacientes[indice].imagen
+        # patient_id = pacientes[indice].id_
 
-def IngresarImagen():
-  ruta = input('Ingrese la ruta de la imagen JPG o PNG:')
+        opcion= input( '''Opciones de binarización:
+            1. Binario
+            2. Binario invertido
+            3. Truncado
+            4. Tozero
+            5. Tozero invertido
+            ''')
 
-  if not os.path.exists(ruta):
-      print('Ruta inválida.')
-      return
+        kernel_size = int(input("Ingrese el tamaño del kernel morfológico (impar): "))
 
-  nombre = input('Asignele un nombre: ')
-
-  if not ruta.lower().endswith(('.jpg', '.png')):
-      print("Formato no válido.")
-
-  elif ruta.lower().endswith('.dcm'):
-        try:
-            ds = pydicom.dcmread(ruta)
-            imagenesNuevas[nombre]= ds.pixel_array
-        except Exception as e:
-            print(f'Error')
-            return
-  else:
-      print('No se pudo cargar la imagen.')
-      return
-      
-  imagenesNuevas[nombre] = img
-  print(f"Imagen cargada exitosamente.")
-                
+        print("Seleccione la forma a dibujar:")
+        print("1. Círculo")
+        print("2. Cuadrado")
+        shape_choice = int(input("Opción (1-2): "))
 
 
+        # Binarización
+        if opcion == '1':
+                _, binaria_im = cv2.threshold(corte, 125, 255, cv2.THRESH_BINARY)
+        elif opcion == '2':
+                _, binaria_im = cv2.threshold(corte, 125, 255, cv2.THRESH_BINARY_INV)
+        elif opcion == '3':
+                _, binaria_im = cv2.threshold(corte, 125, 255, cv2.THRESH_TRUNC)
+        elif opcion == '4':
+                _, binaria_im = cv2.threshold(corte, 125, 255, cv2.THRESH_TOZERO)
+        elif opcion == '5':
+                _, binaria_im = cv2.threshold(corte, 125, 255, cv2.THRESH_TOZERO_INV)
+        else:
+                print(f"Opción no válida")
+
+
+        # Crear kernel para transformacion morfologica
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        # Aplicar operación morfológica
+        morphed_im = cv2.morphologyEx(binaria_im, cv2.MORPH_GRADIENT, kernel, iterations=1)
+
+        # Convertir a RGB para dibujo de forma y texto en color blanco
+        rgb_img = cv2.cvtColor(morphed_im, cv2.COLOR_BGR2RGB)
+
+        h, w = rgb_img.shape[:2]
+        center = (w // 2, h // 2)
+
+        # Dibujar forma y poner texto dentro
+        if shape_choice == 1:
+                # Círculo
+                img = cv2.circle(rgb_img, center, 100, (0,0,255), -1)
+                shape_height = 200  # Altura del círculo
+        elif shape_choice == 2:
+                # Cuadrado
+                top_left = (center[0] - 100, center[1] - 100)
+                bottom_right = (center[0] + 100, center[1] + 100)
+                img = cv2.rectangle(rgb_img, top_left, bottom_right,(255,0,0), -1)
+                shape_height = 100  # Altura del cuadrado
+        else:
+                print(f"Forma no válida")
+
+        #Texto a dibujar
+        text1 = "Imagen binarizada"
+        text2 = "Umbral: (125,255) " #fijo??
+        text3 = f"Kernel: {kernel_size}X{kernel_size}"
+
+        # Dibujar texto  encima de la imagen dentro de la forma
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 0.5
+        font_color = (0, 255, 255) #amarillo
+        line_type = 2
+
+
+        x_text = center[0] - 80
+        y_text = center[1] - 10
+        cv2.putText(img, text1 , (x_text, y_text), font, font_scale, font_color, line_type, cv2.LINE_AA)
+        cv2.putText(img, text2, (x_text, y_text + 30), font, font_scale, font_color, line_type, cv2.LINE_AA)
+        cv2.putText(img, text3 , (x_text, y_text + 60), font, font_scale, font_color, line_type, cv2.LINE_AA)
+
+        # Guardar imagen resultante
+        output_filename = f"_binarized.png"
+        cv2.imwrite(output_filename, rgb_img)
+        print(f"Imagen procesada y guardada: {output_filename}")
+
+        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        plt.show()
