@@ -65,12 +65,13 @@ if __name__ == "__main__":
 
             elif ruta.lower().endswith(('.jpg', '.png')):
                 img = cv2.imread(ruta, cv2.IMREAD_GRAYSCALE)
+                diccionario_dicom[nombre] = img
                 
             else:
                 print('No se pudo cargar la imagen.')
 
                 
-            diccionario_dicom[nombre] = img
+            
             print(f"Imagen cargada exitosamente.")
 
 
