@@ -3,9 +3,9 @@ import os
 import cv2
 import pydicom
 # Diccionarios 
-diccionario_pacientes = {}  # clave-id, valor-bjeto Paciente
-diccionario_dicom = {} # clave-name, valor-dicom
-imagenesNuevas= {}
+diccionario_pacientes = {}  
+diccionario_dicom = {} 
+#imagenesNuevas= {}
 
 if __name__ == "__main__":
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             ds = slices[0]
             paciente = Paciente(ds, volumen)
             diccionario_pacientes[paciente.id_] = paciente
-            print(f"Paciente '{paciente.nombre}' registrado con ID '{paciente.id_}'.")
+            print(f"Paciente '{paciente.nombre}' registrado con ID '{paciente.id_}' Edad {paciente.edad}.")
 
    
         elif menu == '3':
@@ -59,7 +59,7 @@ if __name__ == "__main__":
             if ruta.lower().endswith('.dcm'):
                     try:
                         ds = pydicom.dcmread(ruta)
-                        imagenesNuevas[nombre]= ds.pixel_array
+                        diccionario_dicom[nombre]= ds.pixel_array
                     except Exception as e:
                         print(f'Error')
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 print('No se pudo cargar la imagen.')
 
                 
-            imagenesNuevas[nombre] = img
+            diccionario_dicom[nombre] = img
             print(f"Imagen cargada exitosamente.")
 
 

@@ -168,7 +168,7 @@ class ProcesadorPNG:
         morphed_im = cv2.morphologyEx(binaria_im, cv2.MORPH_GRADIENT, kernel, iterations=1)
 
         # Convertir a RGB para dibujo de forma y texto en color blanco
-        rgb_img = cv2.cvtColor(morphed_im, cv2.COLOR_GRAY2RGB)
+        rgb_img = cv2.cvtColor(morphed_im, cv2.COLOR_GRAY2BGR)
 
         h, w = rgb_img.shape[:2]
         center = (w // 2, h // 2)

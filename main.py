@@ -3,8 +3,8 @@ import os
 import cv2
 import pydicom
 # Diccionarios 
-diccionario_pacientes = {}  # clave-id, valor-bjeto Paciente
-diccionario_dicom = {} # clave-name, valor-dicom
+diccionario_pacientes = {} 
+diccionario_dicom = {} 
 imagenesNuevas= {}
 
 if __name__ == "__main__":
